@@ -1,5 +1,6 @@
 package com.nttdata.stepsdefinitions;
 
+import com.nttdata.steps.InventorySteps;
 import com.nttdata.steps.LinioLoginSteps;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -7,6 +8,7 @@ import io.cucumber.java.en.When;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
+import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -18,7 +20,9 @@ public class LinioStepDef {
     private WebDriver driver;
     private Scenario scenario;
     private LinioLoginSteps loginSteps;
-
+    private InventorySteps inventorySteps(WebDriver driver) {
+        return new InventorySteps(driver);
+    }
 
     @Before(order = 0)
     public void setUp() {
@@ -60,11 +64,23 @@ public class LinioStepDef {
         screenShot();
     }
 
-    @And("se muestra que inicié sesión correctamente")
-    public void SeMuestraQueIniciéSesiónCorrectamente() {
-        screenShot();//falta implementar
+    @And("valida que la autenticación sea correcta mostrando el nombre {string}")
+    public void validaQueLaAutenticaciónSeaCorrecta(String expectedTitle) {
+
+        try{
+            String title = inventorySteps(driver).getTitle();
+            Assertions.assertEquals(expectedTitle, title);;
+        }catch(Exception e){
+            System.out.println("Error: " + e.getMessage());
+        }
+        screenShot();
+
     }
 
+    @And("se muestra que inicié sesión correctamente")
+    public void SeMuestraQueIniciéSesiónCorrectamente() {
+        screenShot();
+    }
 
     @And("hago clic en la opción Mejores Calificados")
     public void hagoClicEnLaOpciónMejoresCalificados() {
@@ -87,4 +103,6 @@ public class LinioStepDef {
         byte[] evidencia = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
         this.scenario.attach(evidencia, "image/png", "evidencias");
     }
+
+
 }

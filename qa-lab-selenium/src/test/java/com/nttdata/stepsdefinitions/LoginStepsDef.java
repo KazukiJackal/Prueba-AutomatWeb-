@@ -64,6 +64,7 @@ public class LoginStepsDef {
     public void valido_que_debería_aparecer_el_título_de(String expectedTitle) {
         String title = inventorySteps(driver).getTitle();
         //prueba: validamos el título del producto
+        screenShot();
         Assertions.assertEquals(expectedTitle, title);
     }
 
